@@ -1,3 +1,5 @@
+# setwd("C:/Users/Ultrabook Ultra You/Documents/Data Scientist/ExploratoryDataAnalysis/Course Project One")
+
 # #### Solution 1: Using read.table to read all data (it is slow and too many steps) 
 # 
 # # Check on source data folder for any .txt files to a list
@@ -45,6 +47,9 @@ library(data.table)
 # Check on source data folder for any .txt files to a list
 FileList <- list.files("./exdata_data_household_power_consumption", pattern="\\.txt$",full.names=TRUE)
 
+# Open source dataset .txt file in Notapad++, 
+# search "1/2/2007" to get 66638 as the first line to read -  starting row
+# serach "3/2/2007" to get 69517 as the last line to read - end row (2880 rows needs to be read) 
 # Select rows from no. 66638 and read only 2880 rows, which are raw data for 2007/02/01-02/02
 WorkingDF_RAW <- fread(FileList, header = FALSE, skip=66637, nrows=2880, sep = ";", na.strings = "?", colClasses = c(rep("character",2),rep("numeric",7)))
 
@@ -57,55 +62,80 @@ setnames(WorkingDF_RAW,names(WorkingDF_RAW),names(WorkingDF_Header))
 # Cpnvert WorkingDF_RAW to a data frame
 WorkingDF_RAW <- as.data.frame(WorkingDF_RAW)
 
+# Consolidate 'Date' and 'Time' column to date-time column
+WorkingDF_RAW[,2] <- paste(WorkingDF_RAW[,1],WorkingDF_RAW[,2])
+
+# Convert column 2 to class of POSIXct
+WorkingDF_RAW[,2] <- as.POSIXct(strptime(WorkingDF_RAW[,2],format="%d/%m/%Y %H:%M:%S"))
+
+# Convert 'Date' column from character class to Date class
+WorkingDF_RAW[,1] <- as.Date(WorkingDF_RAW[,1],"%d/%m/%Y")
+
+# Rename 'Time' column to 'DateTime'
+names(WorkingDF_RAW)[2] <- "DateTime"
+
+## png device supports transparent backgrounds: use bg = "transparent" below. 
+## But not all PNG viewers render files with transparency correctly(Tested OK on Internet Explorer 11). 
+
 # ## Plot 1
+# png(file="plot1.png", bg="transparent")
 # hist(WorkingDF_RAW[,3], xlab="Global Active Power (kilowatts)", col="red", main="Global Active Power")
-# dev.copy(png,file="plot1.png")
+# # dev.copy(png,file="plot1.png")
 # dev.off()
 
 ## Plot 2
-plot(WorkingDF_RAW[,3], xlab="", ylab="Global Active Power (kilowatts)", type="l", axes = FALSE)
-axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+png(file="plot2.png", bg="transparent")
+plot(WorkingDF_RAW[,2], WorkingDF_RAW[,3], xlab="", ylab="Global Active Power (kilowatts)", type="l", axes = FALSE)
+axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 axis(2)
 box()
-dev.copy(png,file="plot2.png")
+# dev.copy(png,file="plot2.png")
 dev.off()
 
 # ## Plot 3
-# plot(WorkingDF_RAW[,7], xlab="", ylab="Energy sub metering", type='l', axes = FALSE)
-# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+# png(file="plot3.png", bg="transparent")
+# plot(WorkingDF_RAW[,2], WorkingDF_RAW[,7], xlab="", ylab="Energy sub metering", type='l', axes = FALSE)
+# axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# # axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 # axis(2)
 # box()
-# lines(WorkingDF_RAW[,8], col="red")
-# lines(WorkingDF_RAW[,9], col="blue")
+# lines(WorkingDF_RAW[,2], WorkingDF_RAW[,8], col="red")
+# lines(WorkingDF_RAW[,2], WorkingDF_RAW[,9], col="blue")
 # legend("topright", pch ="_",y.intersp = 1.0, x.intersp = 1.0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
-# dev.copy(png,file="plot3.png")
+# # dev.copy(png,file="plot3.png")
 # dev.off()
-# 
+
 # ## Plot 4
+# png(file="plot4.png", bg="transparent")
 # par(mfcol=c(2,2),mar=c(4,4,1,2))
 # 
-# plot(WorkingDF_RAW[,3], xlab="", ylab="Global Active Power", type="l", axes = FALSE)
-# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+# plot(WorkingDF_RAW[,2],WorkingDF_RAW[,3], xlab="", ylab="Global Active Power", type="l", axes = FALSE)
+# axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# # axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 # axis(2)
 # box()
 # 
-# plot(WorkingDF_RAW[,7], xlab="", ylab="Energy sub metering", type='l', axes = FALSE)
-# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+# plot(WorkingDF_RAW[,2], WorkingDF_RAW[,7], xlab="", ylab="Energy sub metering", type='l', axes = FALSE)
+# axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# # axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 # axis(2)
-# lines(WorkingDF_RAW[,8], col="red")
-# lines(WorkingDF_RAW[,9], col="blue")
+# lines(WorkingDF_RAW[,2], WorkingDF_RAW[,8], col="red")
+# lines(WorkingDF_RAW[,2], WorkingDF_RAW[,9], col="blue")
 # legend("topright", pch ="_",box.lty=0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
 # box()
 # 
-# plot(WorkingDF_RAW[,5], xlab="datetime", ylab="Voltage", type="l", axes = FALSE)
-# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+# plot(WorkingDF_RAW[,2], WorkingDF_RAW[,5], xlab="datetime", ylab="Voltage", type="l", axes = FALSE)
+# axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# # axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 # axis(2)
 # box()
 # 
-# plot(WorkingDF_RAW[,4], xlab="datetime", ylab="Global_reactive_power", type="l", axes = FALSE)
-# axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
+# plot(WorkingDF_RAW[,2], WorkingDF_RAW[,4], xlab="datetime", ylab="Global_reactive_power", type="l", axes = FALSE)
+# axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"), format="%a")
+# # axis(1, c(1,1440,2880), c("Thu","Fri","Sat"))
 # axis(2)
 # box()
 # 
-# dev.copy(png,file="plot4.png")
+# # dev.copy(png,file="plot4.png")
 # dev.off()
