@@ -1,9 +1,17 @@
 # setwd("C:/Users/Ultrabook Ultra You/Documents/Data Scientist/ExploratoryDataAnalysis/Course Project One")
 
+## Check availability of the original dataset source in your working directory
+
+if (!file.exists("./household_power_consumption.txt")) {
+  fileURL<-"https://d396qusza40orc.cloudfront.net/exdata/data/household_power_consumption.zip"
+  download.file(fileURL, destfile = "household_power_consumption.zip", mode = "wb") 
+  unzip("./household_power_consumption.zip",exdir=getwd())
+}
+
 # #### Solution 1: Using read.table to read all data (it is slow and too many steps) 
 # 
 # # Check on source data folder for any .txt files to a list
-# FileList <- list.files("./exdata_data_household_power_consumption", pattern="\\.txt$",full.names=TRUE) 
+# FileList <- list.files("./", pattern="consumption\\.txt$",full.names=TRUE) 
 # 
 # # Using read.table to read all data to a RAW dataset 
 # DF_RAW <- read.table(FileList, header = TRUE, sep = ";", na.strings = "?", colClasses = c(rep("character",2),rep("numeric",7)))
@@ -45,7 +53,7 @@
 library(data.table)
 
 # Check on source data folder for any .txt files to a list
-FileList <- list.files("./exdata_data_household_power_consumption", pattern="\\.txt$",full.names=TRUE)
+FileList <- list.files("./", pattern="consumption\\.txt$",full.names=TRUE)
 
 # Open source dataset .txt file in Notapad++, 
 # search "1/2/2007" to get 66638 as the first line to read -  starting row
