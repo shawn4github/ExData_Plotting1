@@ -110,7 +110,7 @@ names(WorkingDF_RAW)[2] <- "DateTime"
 # box()
 # lines(WorkingDF_RAW[,2], WorkingDF_RAW[,8], col="red")
 # lines(WorkingDF_RAW[,2], WorkingDF_RAW[,9], col="blue")
-# legend("topright", pch ="_",y.intersp = 1.0, x.intersp = 1.0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+# legend("topright", lty=1, y.intersp = 1.0, x.intersp = 1.0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
 # # dev.copy(png,file="plot3.png")
 # dev.off()
 
@@ -130,7 +130,7 @@ axis.POSIXct(1, at=seq(min(WorkingDF_RAW[,2]), max(WorkingDF_RAW[,2])+60, "days"
 axis(2)
 lines(WorkingDF_RAW[,2], WorkingDF_RAW[,8], col="red")
 lines(WorkingDF_RAW[,2], WorkingDF_RAW[,9], col="blue")
-legend("topright", pch ="_",box.lty=0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+legend("topright", lty=1, box.lty=0, col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
 box()
 
 plot(WorkingDF_RAW[,2], WorkingDF_RAW[,5], xlab="datetime", ylab="Voltage", type="l", axes = FALSE)
